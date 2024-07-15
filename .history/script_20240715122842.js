@@ -7,14 +7,13 @@ const dom = {
 //Массив задач
 const tasks = [];
 
-//Добавление новой задачи по клику на кнопку или нажатию клавиши Enter
+//Отслеживаем клик м нвжв по кнопке Добавить задачу
 function addNewTask() {
     const newTaskText = dom.new.value
     if(newTaskText && isNotHaveTask(newTaskText, tasks)) {
         addTask(newTaskText, tasks)
         dom.new.value = ''
         tasksRender(tasks)
-        dom.new.focus()
     }
 }
 

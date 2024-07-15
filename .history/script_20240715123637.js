@@ -14,7 +14,6 @@ function addNewTask() {
         addTask(newTaskText, tasks)
         dom.new.value = ''
         tasksRender(tasks)
-        dom.new.focus()
     }
 }
 

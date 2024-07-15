@@ -7,24 +7,15 @@ const dom = {
 //Массив задач
 const tasks = [];
 
-//Добавление новой задачи по клику на кнопку или нажатию клавиши Enter
-function addNewTask() {
-    const newTaskText = dom.new.value
-    if(newTaskText && isNotHaveTask(newTaskText, tasks)) {
-        addTask(newTaskText, tasks)
-        dom.new.value = ''
-        tasksRender(tasks)
-        dom.new.focus()
-    }
-}
-
-dom.add.onclick = addNewTask
-
-dom.new.onkeyup = (event) => {
-    if (event.key === 'Enter') {
-        addNewTask()
-    }
-}
+//Отслеживаем клик по кнопке Добавить задачу
+// dom.add.onclick = () => {
+//     const newTaskText = dom.new.value
+//     if(newTaskText && isNotHaveTask(newTaskText, tasks)) {
+//         addTask(newTaskText, tasks)
+//         dom.new.value = ''
+//         tasksRender(tasks)
+//     }
+// }
 
 //Функция добавления задачи
 function addTask(text, list) {

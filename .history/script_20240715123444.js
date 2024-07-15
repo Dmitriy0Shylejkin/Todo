@@ -14,7 +14,6 @@ function addNewTask() {
         addTask(newTaskText, tasks)
         dom.new.value = ''
         tasksRender(tasks)
-        dom.new.focus()
     }
 }
 
@@ -111,7 +110,8 @@ function changeTaskStatus(id, list) {
 function deleteTask(id, list) {
     list.forEach((task, idx) => {
         if (task.id == id) {
-            list.splice(idx, 1)
+            delete list[idx]
+            console.log ()
         }
     })
 }

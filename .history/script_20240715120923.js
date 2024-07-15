@@ -7,22 +7,13 @@ const dom = {
 //Массив задач
 const tasks = [];
 
-//Добавление новой задачи по клику на кнопку или нажатию клавиши Enter
-function addNewTask() {
+//Отслеживаем клик по кнопке Добавить задачу
+dom.add.onclick = () => {
     const newTaskText = dom.new.value
     if(newTaskText && isNotHaveTask(newTaskText, tasks)) {
         addTask(newTaskText, tasks)
         dom.new.value = ''
         tasksRender(tasks)
-        dom.new.focus()
-    }
-}
-
-dom.add.onclick = addNewTask
-
-dom.new.onkeyup = (event) => {
-    if (event.key === 'Enter') {
-        addNewTask()
     }
 }
 
@@ -120,3 +111,5 @@ function deleteTask(id, list) {
 function renderTaskCount(list) {
     dom.count.innerHTML = list.length
 }
+
+//Д
