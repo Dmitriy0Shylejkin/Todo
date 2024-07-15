@@ -28,6 +28,33 @@ body {
     border-radius: 16px;
 }
 
+.btn__checkbox input {
+    display: none;
+}
+
+.btn__checkbox input:checked + div {
+    background-color: var(--accent);
+}
+
+.btn__checkbox input:checked + div::after {
+    display: block;
+}
+
+.btn__checkbox div {
+    --size: 28px;
+    cursor: pointer;
+    height: var(--size);
+    width: var(--size);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: white;
+}
+.btn__checkbox div::after{
+    content: '✔';
+    text-align: center;
+    display: none;
+}
+
 .todo_btn.btn {
     display: block;
 }
@@ -45,8 +72,6 @@ body {
     z-index: 1;
 }
 
-.todo__content {
-}
 .todo__title {
     text-align: center;
     text-transform: uppercase;
@@ -103,15 +128,19 @@ body {
 .todo__checkbox {
     margin-right: 16px;
 }
+
 .todo__checkbox input {
     display: none;
 }
+
 .todo__checkbox input:checked + div {
     background-color: var(--accent);
 }
+
 .todo__checkbox input:checked + div::after {
     display: block;
-    }
+}
+
 .todo__checkbox div {
     --size: 28px;
     cursor: pointer;
@@ -132,9 +161,11 @@ body {
     right: 0;
     bottom: 0;
 }
+
 .todo__task-text {
     font-size: 20px;
 }
+
 .todo__task-del {
     --size: 36px;
     display: none;
