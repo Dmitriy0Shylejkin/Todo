@@ -102,7 +102,8 @@ function changeTaskStatus(id, list) {
 function deleteTask(id, list) {
     list.forEach((task, idx) => {
         if (task.id == id) {
-            list.splice(idx, 1)
+            delete list.splice([idx]
+            console.log(list[idx])
         }
     })
 }

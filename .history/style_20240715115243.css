@@ -35,7 +35,7 @@ body {
 .todo__new {
     --size: 50px;
     display: flex;
-    margin: 16px 0;
+    margin: 16px 0 32px;
 }
 .todo__new input {
     margin-right: 16px;
@@ -61,7 +61,7 @@ body {
 }
 
 .todo__list {
-    margin-top: 16px;
+    margin
 }
 .todo__list > *:not(:last-child) {
     margin-bottom: 8px;

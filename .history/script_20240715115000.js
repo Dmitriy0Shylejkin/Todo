@@ -86,6 +86,7 @@ dom.tasks.onclick = (event) => {
         const taskId = task.getAttribute('id')
         deleteTask(taskId, tasks)
         tasksRender(tasks)
+        console.log(tasks.length, tasks)
     }
 }
 

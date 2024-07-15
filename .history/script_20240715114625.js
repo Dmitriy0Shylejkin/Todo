@@ -103,6 +103,7 @@ function deleteTask(id, list) {
     list.forEach((task, idx) => {
         if (task.id == id) {
             list.splice(idx, 1)
+            console.log(list[idx])
         }
     })
 }

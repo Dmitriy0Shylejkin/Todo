@@ -1,8 +1,7 @@
 const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),
-    tasks: document.getElementById('tasks'),
-    count: document.getElementById('count')
+    tasks: document.getElementById('tasks')
 }
 //Массив задач
 const tasks = [];
@@ -65,7 +64,6 @@ function tasksRender(list) {
     })
 
     dom.tasks.innerHTML = htmlList
-    renderTaskCount(list)
 }
 
 
@@ -73,20 +71,14 @@ function tasksRender(list) {
 dom.tasks.onclick = (event) => {
     const target = event.target
     const isCheckboxEL = target.classList.contains('todo__checkbox-div')
-    const isDeleteEL = target.classList.contains('todo__task-del')
 
     if (isCheckboxEL) {
+        const isComplete = target.previousElementSibling.checked
         const task = target.parentElement.parentElement
         const taskId = task.getAttribute('id')
-        changeTaskStatus(taskId, tasks)
-        tasksRender(tasks)
+         console.log(taskId)
+        // changeTaskStatus(taskId, tasks)
     } 
-    if (isDeleteEL) {
-        const task = target.parentElement
-        const taskId = task.getAttribute('id')
-        deleteTask(taskId, tasks)
-        tasksRender(tasks)
-    }
 }
 
 //Функция изменения статуса задачи
@@ -96,18 +88,4 @@ function changeTaskStatus(id, list) {
             task.isComplete = !task.isComplete
         }
     })
-}
-
-//Функция удаления задачи
-function deleteTask(id, list) {
-    list.forEach((task, idx) => {
-        if (task.id == id) {
-            list.splice(idx, 1)
-        }
-    })
-}
-
-//Вывод кол-ва задач
-function renderTaskCount(list) {
-    dom.count.innerHTML = list.length
 }

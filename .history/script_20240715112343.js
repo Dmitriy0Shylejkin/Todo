@@ -1,8 +1,7 @@
 const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),
-    tasks: document.getElementById('tasks'),
-    count: document.getElementById('count')
+    tasks: document.getElementById('tasks')
 }
 //Массив задач
 const tasks = [];
@@ -65,7 +64,6 @@ function tasksRender(list) {
     })
 
     dom.tasks.innerHTML = htmlList
-    renderTaskCount(list)
 }
 
 
@@ -82,10 +80,8 @@ dom.tasks.onclick = (event) => {
         tasksRender(tasks)
     } 
     if (isDeleteEL) {
-        const task = target.parentElement
+        const task = target.parentElement.parentElement
         const taskId = task.getAttribute('id')
-        deleteTask(taskId, tasks)
-        tasksRender(tasks)
     }
 }
 
@@ -102,12 +98,7 @@ function changeTaskStatus(id, list) {
 function deleteTask(id, list) {
     list.forEach((task, idx) => {
         if (task.id == id) {
-            list.splice(idx, 1)
+            delete 
         }
     })
-}
-
-//Вывод кол-ва задач
-function renderTaskCount(list) {
-    dom.count.innerHTML = list.length
 }
