@@ -1,4 +1,6 @@
 node_modules/
+.history/
 eslint.config.mjs
 package-lock.json
 package.json
+
