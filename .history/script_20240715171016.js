@@ -13,7 +13,6 @@
 // }
 // //Массив задач
 // let tasks = [];
-// let currentFilter = 'all';
 
 // //Добавление новой задачи по клику на кнопку или нажатию клавиши Enter
 // function addNewTask() {
@@ -123,11 +122,6 @@
 //         }
 //     })
 // }
-// function renderTaskCount(list) {
-//         dom.count.innerHTML = list.length;
-//         dom.notCompletedCount.innerHTML = list.filter((task) => !task.isComplete).length;
-//         dom.completedCount.innerHTML = list.filter((task) => task.isComplete).length;
-//       }
 
 // //Вывод кол-ва задач
 // function renderTaskCount(list) {
@@ -150,9 +144,6 @@
 //     tasksRender(filteredTasks)
 //     renderTaskCount(filteredTasks)
 // }
-
-
-
 const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),

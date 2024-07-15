@@ -13,7 +13,6 @@
 // }
 // //Массив задач
 // let tasks = [];
-// let currentFilter = 'all';
 
 // //Добавление новой задачи по клику на кнопку или нажатию клавиши Enter
 // function addNewTask() {
@@ -123,11 +122,6 @@
 //         }
 //     })
 // }
-// function renderTaskCount(list) {
-//         dom.count.innerHTML = list.length;
-//         dom.notCompletedCount.innerHTML = list.filter((task) => !task.isComplete).length;
-//         dom.completedCount.innerHTML = list.filter((task) => task.isComplete).length;
-//       }
 
 // //Вывод кол-ва задач
 // function renderTaskCount(list) {
@@ -151,8 +145,28 @@
 //     renderTaskCount(filteredTasks)
 // }
 
-
-
+// function filterTasks(filter) {
+//     currentFilter = filter;
+  
+//     let filteredTasks = [];
+  
+//     if (filter === 'all') {
+//       filteredTasks = tasks;
+//     } else if (filter === 'active') {
+//       filteredTasks = tasks.filter((task) => !task.isComplete);
+//     } else if (filter === 'completed') {
+//       filteredTasks = tasks.filter((task) => task.isComplete);
+//     }
+  
+//     tasksRender(filteredTasks);
+//   }
+  
+//   dom.filterAll.addEventListener('click', () => filterTasks('all'));
+//   dom.filterActive.addEventListener('click', () => filterTasks('active'));
+//   dom.filterCompleted.addEventListener('click', () => filterTasks('completed'));
+  
+//   // Initial render
+//   tasksRender(tasks);
 const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),

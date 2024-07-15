@@ -151,6 +151,28 @@
 //     renderTaskCount(filteredTasks)
 // }
 
+// function filterTasks(filter) {
+//     currentFilter = filter;
+  
+//     let filteredTasks = [];
+  
+//     if (filter === 'all') {
+//       filteredTasks = tasks;
+//     } else if (filter === 'active') {
+//       filteredTasks = tasks.filter((task) => !task.isComplete);
+//     } else if (filter === 'completed') {
+//       filteredTasks = tasks.filter((task) => task.isComplete);
+//     }
+  
+//     tasksRender(filteredTasks);
+//   }
+  
+//   dom.filterAll.addEventListener('click', () => filterTasks('all'));
+//   dom.filterActive.addEventListener('click', () => filterTasks('active'));
+//   dom.filterCompleted.addEventListener('click', () => filterTasks('completed'));
+  
+//   // Initial render
+//   tasksRender(tasks);
 
 
 const dom = {
