@@ -28,9 +28,28 @@ body {
     border-radius: 16px;
 }
 
+.todo_btn.btn {
+    display: block;
+}
+
+.todo_btn > * {
+    padding: .75rem 2rem;
+    margin: 10px;
+    border-radius: 10rem;
+    color: #EA5959;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: .15rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
 .todo__content {
 }
 .todo__title {
+    text-align: center;
+    text-transform: uppercase;
 }
 .todo__new {
     --size: 50px;
@@ -124,3 +143,25 @@ body {
     line-height:calc(var(--size) * 0.85);
     font-size: 44px;
 }
+
+.todo__pagination {
+    display: flex;
+    padding: 0px 40%;
+}
+
+.todo__pagination > * {
+    margin: auto;
+    padding: 0.25rem 0.7rem;
+    border-radius: 1rem;
+    color:#EA5959;
+}
+
+.hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
