@@ -3,9 +3,14 @@ const dom = {
     add: document.getElementById('add'),
     tasks: document.getElementById('tasks'),
     count: document.getElementById('count'),
+    pagination: document.querySelector('.todo__pagination')
 }
+
+const ITEMS_PER_PAGE = 5;
+
 //Массив задач
-const tasks = [];
+let tasks = [];
+let currentPage = 1;
 
 //Функция добавления задачи
 function addTask(text, list) {
@@ -18,23 +23,23 @@ function addTask(text, list) {
     list.push(task)
 }
 
-//Проверка существования задачи в массиве задач
-function isNotHaveTask(text, list) {
-    let isNoteHave = true
-
-    list.forEach((task) => {
-        if(task.text === text) {
-            alert('Задача уже существует!')
-            isNoteHave = false
-        }
-    })
-
-    return isNoteHave
-}
-
 //Функция вывода списка задач
 function tasksRender(list) {
+    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE);
     let htmlList = ''
+    let paginationHtml = '';  
+
+    for (let i = 1; i <= totalPages; i++) {
+        paginationHtml += `<button class="pagination__page" data-page="${i}">${i}</button>`;
+      }
+      
+      dom.pagination.innerHTML = paginationHtml;
+      document.querySelectorAll(".pagination__page").forEach((button) => {
+        button.addEventListener("click", function () {
+          currentPage = parseInt(this.dataset.page);
+          tasksRender(tasks);
+        });
+      });
 
     list.forEach((task) => {
         const cls = task.isComplete ? 'todo__task todo__task_complete' : 'todo__task'
@@ -84,7 +89,7 @@ function renderTaskCount(list) {
 //Отслеживаем клик по кнопке Добавить задачу
 dom.add.addEventListener('click', event => {
     const newTaskText = dom.new.value
-    if(newTaskText && isNotHaveTask(newTaskText, tasks)) {
+    if(newTaskText) {
         addTask(newTaskText, tasks)
         dom.new.value = ''
         tasksRender(tasks)
