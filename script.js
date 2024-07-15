@@ -16,7 +16,7 @@ function addTask(text, list) {
         isComplete: false
     }
     list.push(task)
-}
+} 
 
 //Проверка существования задачи в массиве задач
 function isNotHaveTask(text, list) {
