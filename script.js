@@ -3,27 +3,15 @@ const dom = {
     add: document.getElementById('add'),
     tasks: document.getElementById('tasks'),
     count: document.getElementById('count'),
-    pagination: document.querySelector('.todo__pagination')
+    pagination: document.querySelector('.todo__pagination'),
+    page: document.querySelectorAll(".pagination__page")
 }
 
 const ITEMS_PER_PAGE = 5;
 
-//Массив задач
 let tasks = [];
 let currentPage = 1;
 
-//Функция добавления задачи
-function addTask(text, list) {
-    const timestamp = Date.now()
-    const task = {
-        id: timestamp,
-        text,
-        isComplete: false
-    }
-    list.push(task)
-}
-
-//Функция вывода списка задач
 function tasksRender(list) {
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE);
     let htmlList = ''
@@ -34,12 +22,6 @@ function tasksRender(list) {
       }
       
       dom.pagination.innerHTML = paginationHtml;
-      document.querySelectorAll(".pagination__page").forEach((button) => {
-        button.addEventListener("click", function () {
-          currentPage = parseInt(this.dataset.page);
-          tasksRender(tasks);
-        });
-      });
 
     list.forEach((task) => {
         const cls = task.isComplete ? 'todo__task todo__task_complete' : 'todo__task'
@@ -63,7 +45,28 @@ function tasksRender(list) {
     renderTaskCount(list)
 }
 
-//Функция изменения статуса задачи
+function renderTaskCount(list) {
+    dom.count.innerHTML = list.length
+}
+
+function tasksPagination(event) {
+  if (event.target.classList.contains('pagination__page')) {
+    currentPage = Number(event.target.dataset.page);
+    renderTasks(tasks);
+    renderPagination(tasks);
+  }
+}
+
+function addTask(text, list) {
+    const timestamp = Date.now()
+    const task = {
+        id: timestamp,
+        text,
+        isComplete: false
+    }
+    list.push(task)
+}
+
 function changeTaskStatus(id, list) {
     list.forEach((task) => {
         if (task.id == id) {
@@ -72,21 +75,15 @@ function changeTaskStatus(id, list) {
     })
 }
 
-//Функция удаления задачи
 function deleteTask(id, list) {
     list.forEach((task, idx) => {
         if (task.id == id) {
-            list = list.splice(idx, 1)
+            [...list] = list.splice(idx, 1)
         }
     })
 }
 
-//Вывод кол-ва задач
-function renderTaskCount(list) {
-    dom.count.innerHTML = list.length
-}
 
-//Отслеживаем клик по кнопке Добавить задачу
 dom.add.addEventListener('click', event => {
     const newTaskText = dom.new.value
     if(newTaskText) {
@@ -96,11 +93,9 @@ dom.add.addEventListener('click', event => {
     }
 })
 
-// Отслеживаем клик по чекбоксу задачи
 dom.tasks.addEventListener('click', (event) => {
     const target = event.target
     const isCheckboxEL = target.classList.contains('todo__checkbox-div')
-    const isDeleteEL = target.classList.contains('todo__task-del')
 
     if (isCheckboxEL) {
         const task = target.parentElement.parentElement
@@ -108,6 +103,13 @@ dom.tasks.addEventListener('click', (event) => {
         changeTaskStatus(taskId, tasks)
         tasksRender(tasks)
     } 
+    
+})
+
+dom.tasks.addEventListener('click', (event) => {
+    const target = event.target;
+    const isDeleteEL = target.classList.contains('todo__task-del')
+
     if (isDeleteEL) {
         const task = target.parentElement
         const taskId = task.getAttribute('id')
@@ -115,3 +117,6 @@ dom.tasks.addEventListener('click', (event) => {
         tasksRender(tasks)
     }
 })
+
+
+dom.pagination.addEventListener("click", tasksPagination);
