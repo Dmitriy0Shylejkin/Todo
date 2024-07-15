@@ -15,18 +15,16 @@ let currentPage = 1;
 function tasksRender(list) {
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE);
     let htmlList = ''
-    let paginationHtml = '';  
+    let paginationHtml = '';
 
-    for (let i = 1; i <= totalPages; i++) {
-        paginationHtml += `<button class="pagination__page" data-page="${i}">${i}</button>`;
-      }
-      
-      dom.pagination.innerHTML = paginationHtml;
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const currentTasks = list.slice(startIndex, endIndex);
 
-    list.forEach((task) => {
+    currentTasks.forEach((task) => {
         const cls = task.isComplete ? 'todo__task todo__task_complete' : 'todo__task'
         const checked = task.isComplete ? 'checked' : ''
-        
+
         const taskHtml = `
         <div id="${task.id}" class="${cls}">
             <label class="todo__checkbox">
@@ -41,6 +39,16 @@ function tasksRender(list) {
         htmlList = htmlList + taskHtml
     })
 
+    for (let i = 1; i <= totalPages; i++) {
+        let buttonClass = 'pagination__page';
+        if (i === currentPage) {
+            buttonClass += ' pagination__page_active';
+        }
+        paginationHtml += `<button class="${buttonClass}" data-page="${i}">${i}</button>`;
+      }
+
+      dom.pagination.innerHTML = paginationHtml;
+
     dom.tasks.innerHTML = htmlList
     renderTaskCount(list)
 }
@@ -52,8 +60,7 @@ function renderTaskCount(list) {
 function tasksPagination(event) {
   if (event.target.classList.contains('pagination__page')) {
     currentPage = Number(event.target.dataset.page);
-    renderTasks(tasks);
-    renderPagination(tasks);
+    tasksRender(tasks);
   }
 }
 
@@ -83,7 +90,6 @@ function deleteTask(id, list) {
     })
 }
 
-
 dom.add.addEventListener('click', event => {
     const newTaskText = dom.new.value
     if(newTaskText) {
@@ -102,8 +108,7 @@ dom.tasks.addEventListener('click', (event) => {
         const taskId = task.getAttribute('id')
         changeTaskStatus(taskId, tasks)
         tasksRender(tasks)
-    } 
-    
+    }
 })
 
 dom.tasks.addEventListener('click', (event) => {
@@ -117,6 +122,5 @@ dom.tasks.addEventListener('click', (event) => {
         tasksRender(tasks)
     }
 })
-
 
 dom.pagination.addEventListener("click", tasksPagination);
