@@ -2,9 +2,11 @@ const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),
     tasks: document.getElementById('tasks'),
-    count: document.getElementById('count'),
     pagination: document.querySelector('.todo__pagination'),
-    page: document.querySelectorAll(".pagination__page")
+    page: document.querySelectorAll(".pagination__page"),
+    countAll: document.getElementById('count__all'),
+    countCompleted: document.getElementById('count__completed'),
+    countNotCompleted: document.getElementById('count__notcompleted'),
 }
 
 const ITEMS_PER_PAGE = 5;
@@ -54,7 +56,9 @@ function tasksRender(list) {
 }
 
 function renderTaskCount(list) {
-    dom.count.innerHTML = list.length
+    dom.countAll.innerHTML = list.length;
+    dom.countCompleted.innerHTML = list.filter((task) => !!task.isComplete).length;
+    dom.countNotCompleted.innerHTML = list.filter((task) => !task.isComplete).length;
 }
 
 function tasksPagination(event) {
@@ -124,3 +128,4 @@ dom.tasks.addEventListener('click', (event) => {
 })
 
 dom.pagination.addEventListener("click", tasksPagination);
+
