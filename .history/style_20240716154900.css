@@ -250,13 +250,3 @@ body {
     white-space: nowrap;
     width: 1px;
   }
-
-  .todo__task-text-input {
-    font-size: 20px;
-    padding: 8px 16px;
-    height: var(--size);
-    border: 1px solid var(--default);
-    border-radius: 5px;
-    flex-grow: 1;
-    margin-right: 16px;
-  }

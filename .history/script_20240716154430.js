@@ -22,24 +22,11 @@ let currentPage = 1;
 /////////////
 function addNewTask() {
   const newTaskText = dom.new.value;
-
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newTaskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-
-  // Экранирование скриптов и символов
-  const escapedTaskText = singleSpaces.replace(/[#%:?*"]/g, '');
-
-  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
-    addTask(escapedTaskText, tasks);
+  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
+    addTask(newTaskText, tasks);
     dom.new.value = '';
     tasksRender(tasks);
     dom.new.focus();
-  } else if (!escapedTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.');
   }
 }
 
@@ -94,7 +81,8 @@ function tasksRender(list) {
                <input type="checkbox" ${checked}>
               <div class="todo__checkbox-div"></div>
           </label>
-          <div class="todo__task-text">${task.text}</div>
+          <div class="todo__task-text" ondblclick="editTask(${task.id}, tasks, this)">${task.text}</div>
+           <input class="todo__task-input hidden" type="text" value="${task.text}">
           <div class="todo__task-del">-</div>
        </div>
       `
@@ -152,6 +140,16 @@ if (event.target.classList.contains('pagination__page')) {
   currentPage = Number(event.target.dataset.page);
   tasksRender(tasks);
 }
+}
+
+function addTask(text, list) {
+  const timestamp = Date.now()
+  const task = {
+      id: timestamp,
+      text,
+      isComplete: false
+  }
+  list.push(task)
 }
 
 function changeTaskStatus(id, list) {
@@ -215,8 +213,6 @@ dom.add.addEventListener('click', event => {
   }
 })
 
-
-
 dom.tasks.addEventListener('click', (event) => {
   const target = event.target;
   const isDeleteEL = target.classList.contains('todo__task-del')
@@ -230,6 +226,36 @@ dom.tasks.addEventListener('click', (event) => {
 })
 
 dom.pagination.addEventListener("click", tasksPagination);
+
+function editTask(id, list, element) {
+  const task = list.find((task) => task.id === id);
+  const input = element.parentElement.querySelector('.todo__task-input');
+
+  input.classList.remove('hidden');
+  element.classList.add('hidden');
+  input.focus();
+
+  input.onblur = () => {
+    if (input.value !== '') {
+      task.text = input.value;
+    }
+    input.classList.add('hidden');
+    element.classList.remove('hidden');
+  };
+
+  input.onkeyup = (event) => {
+    if (event.key === 'Enter') {
+      if (input.value !== '') {
+        task.text = input.value;
+      }
+      input.classList.add('hidden');
+      element.classList.remove('hidden');
+    } else if (event.key === 'Escape') {
+      input.classList.add('hidden');
+      element.classList.remove('hidden');
+    }
+  };
+}
 
 ///////
 tasksRender(tasks);

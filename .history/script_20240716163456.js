@@ -27,11 +27,8 @@ function addNewTask() {
   const cleanedTaskText = _.trim(newTaskText);
   const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
 
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-
   // Экранирование скриптов и символов
-  const escapedTaskText = singleSpaces.replace(/[#%:?*"]/g, '');
+  const escapedTaskText = withoutExtraSpaces.replace(/[#%:?*"]/g, '');
 
   if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
     addTask(escapedTaskText, tasks);

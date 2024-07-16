@@ -22,24 +22,11 @@ let currentPage = 1;
 /////////////
 function addNewTask() {
   const newTaskText = dom.new.value;
-
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newTaskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-
-  // Экранирование скриптов и символов
-  const escapedTaskText = singleSpaces.replace(/[#%:?*"]/g, '');
-
-  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
-    addTask(escapedTaskText, tasks);
+  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
+    addTask(newTaskText, tasks);
     dom.new.value = '';
     tasksRender(tasks);
     dom.new.focus();
-  } else if (!escapedTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.');
   }
 }
 
@@ -154,6 +141,16 @@ if (event.target.classList.contains('pagination__page')) {
 }
 }
 
+function addTask(text, list) {
+  const timestamp = Date.now()
+  const task = {
+      id: timestamp,
+      text,
+      isComplete: false
+  }
+  list.push(task)
+}
+
 function changeTaskStatus(id, list) {
   list.forEach((task) => {
       if (task.id == id) {
@@ -215,7 +212,17 @@ dom.add.addEventListener('click', event => {
   }
 })
 
+dom.tasks.addEventListener('click', (event) => {
+  const target = event.target
+  const isCheckboxEL = target.classList.contains('todo__checkbox-div')
 
+  if (isCheckboxEL) {
+      const task = target.parentElement.parentElement
+      const taskId = task.getAttribute('id')
+      changeTaskStatus(taskId, tasks)
+      tasksRender(tasks)
+  }
+})
 
 dom.tasks.addEventListener('click', (event) => {
   const target = event.target;

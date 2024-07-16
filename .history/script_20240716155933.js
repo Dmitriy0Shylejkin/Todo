@@ -22,24 +22,11 @@ let currentPage = 1;
 /////////////
 function addNewTask() {
   const newTaskText = dom.new.value;
-
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newTaskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-
-  // Экранирование скриптов и символов
-  const escapedTaskText = singleSpaces.replace(/[#%:?*"]/g, '');
-
-  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
-    addTask(escapedTaskText, tasks);
+  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
+    addTask(newTaskText, tasks);
     dom.new.value = '';
     tasksRender(tasks);
     dom.new.focus();
-  } else if (!escapedTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.');
   }
 }
 
@@ -152,6 +139,16 @@ if (event.target.classList.contains('pagination__page')) {
   currentPage = Number(event.target.dataset.page);
   tasksRender(tasks);
 }
+}
+
+function addTask(text, list) {
+  const timestamp = Date.now()
+  const task = {
+      id: timestamp,
+      text,
+      isComplete: false
+  }
+  list.push(task)
 }
 
 function changeTaskStatus(id, list) {

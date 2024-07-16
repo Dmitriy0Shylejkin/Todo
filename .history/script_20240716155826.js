@@ -22,24 +22,11 @@ let currentPage = 1;
 /////////////
 function addNewTask() {
   const newTaskText = dom.new.value;
-
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newTaskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-
-  // Экранирование скриптов и символов
-  const escapedTaskText = singleSpaces.replace(/[#%:?*"]/g, '');
-
-  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
-    addTask(escapedTaskText, tasks);
+  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
+    addTask(newTaskText, tasks);
     dom.new.value = '';
     tasksRender(tasks);
     dom.new.focus();
-  } else if (!escapedTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.');
   }
 }
 
@@ -94,7 +81,10 @@ function tasksRender(list) {
                <input type="checkbox" ${checked}>
               <div class="todo__checkbox-div"></div>
           </label>
-          <div class="todo__task-text">${task.text}</div>
+          <div class="todo__task-text">
+  <span class="todo__task-text-content">${task.text}</span>
+  <input class="todo__task-text-input hidden" type="text" value="${task.text}">
+</div>
           <div class="todo__task-del">-</div>
        </div>
       `
@@ -152,6 +142,16 @@ if (event.target.classList.contains('pagination__page')) {
   currentPage = Number(event.target.dataset.page);
   tasksRender(tasks);
 }
+}
+
+function addTask(text, list) {
+  const timestamp = Date.now()
+  const task = {
+      id: timestamp,
+      text,
+      isComplete: false
+  }
+  list.push(task)
 }
 
 function changeTaskStatus(id, list) {
@@ -215,8 +215,6 @@ dom.add.addEventListener('click', event => {
   }
 })
 
-
-
 dom.tasks.addEventListener('click', (event) => {
   const target = event.target;
   const isDeleteEL = target.classList.contains('todo__task-del')
@@ -230,6 +228,61 @@ dom.tasks.addEventListener('click', (event) => {
 })
 
 dom.pagination.addEventListener("click", tasksPagination);
+
+dom.tasks.addEventListener('dblclick', (event) => {
+  const target = event.target;
+  const isTaskText = target.classList.contains('todo__task-text');
+
+  if (isTaskText) {
+    const taskText = target;
+    const isEditMode = taskText.dataset.editMode === 'true';
+
+    if (!isEditMode) {
+      const input = taskText.querySelector('.todo__task-text-input');
+      const content = taskText.querySelector('.todo__task-text-content');
+      input.value = content.textContent;
+      input.classList.remove('hidden');
+      content.classList.add('hidden');
+      taskText.dataset.editMode = 'true';
+      input.focus();
+    }
+  }
+});
+
+dom.tasks.addEventListener('keydown', (event) => {
+  const target = event.target;
+  const isTaskTextInput = target.classList.contains('todo__task-text-input');
+
+  if (isTaskTextInput) {
+    const taskText = target.parentElement;
+    const content = taskText.querySelector('.todo__task-text-content');
+
+    if (event.key === 'Enter') {
+      content.textContent = target.value;
+      target.classList.add('hidden');
+      content.classList.remove('hidden');
+      taskText.dataset.editMode = 'false';
+    } else if (event.key === 'Escape') {
+      target.classList.add('hidden');
+      content.classList.remove('hidden');
+      taskText.dataset.editMode = 'false';
+    }
+  }
+});
+
+dom.tasks.addEventListener('blur', (event) => {
+  const target = event.target;
+  const isTaskTextInput = target.classList.contains('todo__task-text-input');
+
+  if (isTaskTextInput) {
+    const taskText = target.parentElement;
+    const content = taskText.querySelector('.todo__task-text-content');
+    content.textContent = target.value;
+    target.classList.add('hidden');
+    content.classList.remove('hidden');
+    taskText.dataset.editMode = 'false';
+  }
+});
 
 ///////
 tasksRender(tasks);
