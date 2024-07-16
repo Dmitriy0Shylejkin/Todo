@@ -28,55 +28,7 @@ body {
     border-radius: 16px;
 }
 
-
-
-/* .btn__checkbox input {
-    display: none;
-}
-
-.btn__checkbox input:checked + div {
-    background-color: var(--accent);
-}
-
-.btn__checkbox input:checked + div::after {
-    display: block;
-}
-
-.btn__checkbox div {
-    --size: 28px;
-    cursor: pointer;
-    height: var(--size);
-    width: var(--size);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    color: white;
-}
-.btn__checkbox div::after{
-    content: '✔';
-    text-align: center;
-    display: none;
-}
-
-.todo_btn.btn {
-    display: block;
-}
-
-.todo_btn > * {
-    padding: .75rem 2rem;
-    margin: 10px;
-    border-radius: 10rem;
-    color: #EA5959;
-    text-transform: uppercase;
-    font-size: 1rem;
-    letter-spacing: .15rem;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-} */
-
-/*
-*/
-.todo__content { 
+.todo__content {
 }
 .todo__title {
 }
@@ -111,8 +63,6 @@ body {
     color: white;
     margin-left: 16px;
 }
-/*
-*/
 .todo__new input {
     margin-right: 16px;
     font-size: 18px;
@@ -123,7 +73,7 @@ body {
     flex-grow: 1;
 }
 .todo__add,
- .todo__task-del {
+ .todo__task-del { 
     cursor: pointer;
     text-align: center;
     width: var(--size);
@@ -148,7 +98,7 @@ body {
     display: flex;
     min-height: var(--size);
     align-items: center;
-    
+   
 }
 .todo__task:hover .todo__task-del{
    display: block; 
@@ -160,19 +110,15 @@ body {
 .todo__checkbox {
     margin-right: 16px;
 }
-
 .todo__checkbox input {
     display: none;
 }
-
 .todo__checkbox input:checked + div {
     background-color: var(--accent);
 }
-
 .todo__checkbox input:checked + div::after {
     display: block;
-}
-
+    }
 .todo__checkbox div {
     --size: 28px;
     cursor: pointer;
@@ -193,11 +139,9 @@ body {
     right: 0;
     bottom: 0;
 }
-
 .todo__task-text {
     font-size: 20px;
 }
-
 .todo__task-del {
     --size: 36px;
     display: none;
@@ -206,13 +150,6 @@ body {
     line-height:calc(var(--size) * 0.85);
     font-size: 44px;
 }
-
-.todo__pagination {
-    display: flex;
-    padding: 0px 40%;
-}
-/*
-*/
 .todo__filters {
     display: flex;
     justify-content: space-between;
@@ -231,22 +168,4 @@ body {
     background-color: var(--accent);
     color: white;
     margin-right: 16px;
-  }
-/*
-*/
-.todo__pagination > * {
-    margin: auto;
-    padding: 0.25rem 0.7rem;
-    border-radius: 1rem;
-    color:#EA5959;
-}
-
-.hidden {
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
   }
