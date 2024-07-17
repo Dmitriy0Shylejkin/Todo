@@ -172,10 +172,6 @@ body {
     border-radius: 1rem;
     color:#EA5959;
 }
-.pagination__page_active {
-    background-color: var(--accent);
-    color: white;
-}
 .hidden {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);

@@ -55,13 +55,6 @@ function addNewTask() {
     dom.new.value = ''
     tasksRender(tasks)
     dom.new.focus()
-
-    // Автоматически переходим на новую страницу, если на текущей странице уже есть 5 задач
-    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
-    if ((currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE < tasks.length) {
-        currentPage = totalPages;
-        tasksRender(tasks);
-    }
   } else if (!escapedTaskText) {
     alert('Поле не может быть пустым или содержать только пробелы.')
   }
@@ -254,11 +247,13 @@ dom.add.addEventListener('click', () => {
       addTask(newTaskText, tasks)
       dom.new.value = ''
       
-      // Проверяем, нужно ли обновить текущую страницу
-    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
-    if (totalPages > currentPage) {
-      currentPage = totalPages
-    }
+      // Вычисляем номер новой страницы
+    const totalTasks = tasks.length;
+    const newPageNumber = Math.floor((totalTasks - 1) / ITEMS_PER_PAGE) + 1;
+
+    // Обновляем текущую страницу
+    currentPage = newPageNumber;
+    
 
       tasksRender(tasks)
   }
@@ -319,36 +314,11 @@ document.addEventListener('blur', (event) => {
 
 // Функция обновления текста задачи
 function updateTaskText(id, newText, list) {
-  
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newText)
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-    '#': '&#35;',
-    '%': '&#37;',
-    ':': '&#58;',
-    '?': '&#63;',
-    '*': '&#42;',
-  }
-  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
-  
-  if (escapedTaskText) {
-    list.forEach((task) => {
-      if (task.id == id) {
-        task.text = escapedTaskText;
-      }
-    })
-  } else {
-    alert('Поле не может быть пустым или содержать только пробелы.')
-  }
+  list.forEach((task) => {
+    if (task.id == id) {
+      task.text = newText
+    }
+  })
 }
 
 // Функция получения текста задачи по id

@@ -343,7 +343,7 @@ function updateTaskText(id, newText, list) {
   if (escapedTaskText) {
     list.forEach((task) => {
       if (task.id == id) {
-        task.text = escapedTaskText;
+          task.text = escapedTaskText;
       }
     })
   } else {

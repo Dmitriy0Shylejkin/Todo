@@ -165,16 +165,12 @@ body {
     background-color: var(--accent);
     color: white;
     margin-right: 16px;
-}
+  }
 .todo__pagination > * {
     margin: auto;
     padding: 0.25rem 0.7rem;
     border-radius: 1rem;
     color:#EA5959;
-}
-.pagination__page_active {
-    background-color: var(--accent);
-    color: white;
 }
 .hidden {
     clip: rect(0 0 0 0);
@@ -184,8 +180,8 @@ body {
     position: absolute;
     white-space: nowrap;
     width: 1px;
-}
-.todo__task-text-input {
+  }
+  .todo__task-text-input {
     font-size: 20px;
     padding: 8px 16px;
     height: var(--size);
@@ -193,4 +189,4 @@ body {
     border-radius: 5px;
     flex-grow: 1;
     margin-right: 16px;
-}
+  }

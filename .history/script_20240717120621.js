@@ -319,7 +319,6 @@ document.addEventListener('blur', (event) => {
 
 // Функция обновления текста задачи
 function updateTaskText(id, newText, list) {
-  
   // Удаление лишних пробелов
   const cleanedTaskText = _.trim(newText)
   const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
@@ -340,8 +339,8 @@ function updateTaskText(id, newText, list) {
   }
   const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
   
-  if (escapedTaskText) {
-    list.forEach((task) => {
+  list.forEach((task) => {
+    if (task.id == id) {
       if (task.id == id) {
         task.text = escapedTaskText;
       }

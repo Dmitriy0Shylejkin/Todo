@@ -319,7 +319,6 @@ document.addEventListener('blur', (event) => {
 
 // Функция обновления текста задачи
 function updateTaskText(id, newText, list) {
-  
   // Удаление лишних пробелов
   const cleanedTaskText = _.trim(newText)
   const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
@@ -339,16 +338,12 @@ function updateTaskText(id, newText, list) {
     '*': '&#42;',
   }
   const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
-  
-  if (escapedTaskText) {
-    list.forEach((task) => {
-      if (task.id == id) {
-        task.text = escapedTaskText;
-      }
-    })
-  } else {
-    alert('Поле не может быть пустым или содержать только пробелы.')
-  }
+
+  list.forEach((task) => {
+    if (task.id == id) {
+      task.text = escapedTaskText
+    }
+  })
 }
 
 // Функция получения текста задачи по id
@@ -359,6 +354,9 @@ function getTaskTextById(id, list) {
       taskText = task.text
     }
   })
+  }else {
+    alert('Поле не может быть пустым или содержать только пробелы.')
+  }
   return taskText
 }
 

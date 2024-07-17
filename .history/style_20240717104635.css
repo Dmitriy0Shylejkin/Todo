@@ -4,10 +4,12 @@
     --accent: #EA5959;
     --default: rgba(0,0,0,0.3);
 }
+
 * {
 margin: 0;
 box-sizing: border-box;
 }
+
 body {
     font-family: "Nunito", sans-serif;
     background-color: var(--accent);
@@ -18,12 +20,62 @@ body {
     font-size: 18px;
     font-weight: 300;
 }
+
 .todo {
     padding: 32px;
     background-color: #fff;
     width: 90vw;
     border-radius: 16px;
 }
+
+
+
+/* .btn__checkbox input {
+    display: none;
+}
+
+.btn__checkbox input:checked + div {
+    background-color: var(--accent);
+}
+
+.btn__checkbox input:checked + div::after {
+    display: block;
+}
+
+.btn__checkbox div {
+    --size: 28px;
+    cursor: pointer;
+    height: var(--size);
+    width: var(--size);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: white;
+}
+.btn__checkbox div::after{
+    content: '✔';
+    text-align: center;
+    display: none;
+}
+
+.todo_btn.btn {
+    display: block;
+}
+
+.todo_btn > * {
+    padding: .75rem 2rem;
+    margin: 10px;
+    border-radius: 10rem;
+    color: #EA5959;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: .15rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+} */
+
+/*
+*/
 .todo__content { 
 }
 .todo__title {
@@ -59,6 +111,8 @@ body {
     color: white;
     margin-left: 16px;
 }
+/*
+*/
 .todo__new input {
     margin-right: 16px;
     font-size: 18px;
@@ -69,7 +123,7 @@ body {
     flex-grow: 1;
 }
 .todo__add,
-.todo__task-del {
+ .todo__task-del {
     cursor: pointer;
     text-align: center;
     width: var(--size);
@@ -81,6 +135,7 @@ body {
     background-color: var(--accent);
     color: white;
 }
+
 .todo__list {
     margin-top: 16px;
 }
@@ -92,7 +147,8 @@ body {
     --size: 36px;
     display: flex;
     min-height: var(--size);
-    align-items: center;  
+    align-items: center;
+    
 }
 .todo__task:hover .todo__task-del{
    display: block; 
@@ -104,15 +160,19 @@ body {
 .todo__checkbox {
     margin-right: 16px;
 }
+
 .todo__checkbox input {
     display: none;
 }
+
 .todo__checkbox input:checked + div {
     background-color: var(--accent);
 }
+
 .todo__checkbox input:checked + div::after {
     display: block;
 }
+
 .todo__checkbox div {
     --size: 28px;
     cursor: pointer;
@@ -148,11 +208,12 @@ body {
     display: flex;
     padding: 0px 40%;
 }
+
 .todo__filters {
     display: flex;
     justify-content: space-between;
     margin: 16px 0;
-}
+  }
   .todo__filter {
     cursor: pointer;
     text-align: center;
@@ -165,16 +226,12 @@ body {
     background-color: var(--accent);
     color: white;
     margin-right: 16px;
-}
+  }
 .todo__pagination > * {
     margin: auto;
     padding: 0.25rem 0.7rem;
     border-radius: 1rem;
     color:#EA5959;
-}
-.pagination__page_active {
-    background-color: var(--accent);
-    color: white;
 }
 .hidden {
     clip: rect(0 0 0 0);
@@ -184,8 +241,8 @@ body {
     position: absolute;
     white-space: nowrap;
     width: 1px;
-}
-.todo__task-text-input {
+  }
+  .todo__task-text-input {
     font-size: 20px;
     padding: 8px 16px;
     height: var(--size);
@@ -193,4 +250,4 @@ body {
     border-radius: 5px;
     flex-grow: 1;
     margin-right: 16px;
-}
+  }

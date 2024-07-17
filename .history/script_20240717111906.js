@@ -26,7 +26,7 @@ let editableTask = null
 
 // Функция добавления новой задачи
 function addNewTask() {
-  const newTaskText = dom.new.value
+  const newTaskText = dom.new.value;
 
   // Удаление лишних пробелов
   const cleanedTaskText = _.trim(newTaskText)
@@ -47,7 +47,7 @@ function addNewTask() {
     ':': '&#58;',
     '?': '&#63;',
     '*': '&#42;',
-  }
+  };
   const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
 
   if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
@@ -55,13 +55,6 @@ function addNewTask() {
     dom.new.value = ''
     tasksRender(tasks)
     dom.new.focus()
-
-    // Автоматически переходим на новую страницу, если на текущей странице уже есть 5 задач
-    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
-    if ((currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE < tasks.length) {
-        currentPage = totalPages;
-        tasksRender(tasks);
-    }
   } else if (!escapedTaskText) {
     alert('Поле не может быть пустым или содержать только пробелы.')
   }
@@ -97,9 +90,9 @@ function isNotHaveTask(text, list) {
       alert('Задача уже существует!')
       isNoteHave = false
     }
-  })
+  });
 
-  return isNoteHave
+  return isNoteHave;
 } 
 
 // Функция рендера задач
@@ -214,32 +207,32 @@ dom.markAll.onclick = () => {
   const isAllTasksCompleted = tasks.every((task) => task.isComplete)
   tasks.forEach((task) => {
     task.isComplete = !isAllTasksCompleted
-  })
-  tasksRender(tasks)
-}
+  });
+  tasksRender(tasks);
+};
 
 dom.clearCompleted.onclick = () => {
-  const filteredTasks = tasks.filter((task) => !task.isComplete)
-  tasks = filteredTasks
-  tasksRender(filteredTasks)
-  renderTaskCount(filteredTasks)
-}
+  const filteredTasks = tasks.filter((task) => !task.isComplete);
+  tasks = filteredTasks;
+  tasksRender(filteredTasks);
+  renderTaskCount(filteredTasks);
+};
 
 // Функция фильтрации задач
 function filterTasks(filter) {
   currentFilter = filter
 
-  let filteredTasks = []
+  let filteredTasks = [];
 
   if (currentFilter === 'all') {
-    filteredTasks = tasks
+    filteredTasks = tasks;
   } else if (currentFilter === 'active') {
-    filteredTasks = tasks.filter((task) => !task.isComplete)
+    filteredTasks = tasks.filter((task) => !task.isComplete);
   } else if (currentFilter === 'completed') {
-    filteredTasks = tasks.filter((task) => task.isComplete)
+    filteredTasks = tasks.filter((task) => task.isComplete);
   }
 
-  tasksRender(filteredTasks)
+  tasksRender(filteredTasks);
 }
 
 // Обработчики событий для кнопок фильтрации
@@ -279,91 +272,66 @@ dom.tasks.addEventListener('click', (event) => {
 
 // Обработчик событий для редактирования задачи
 dom.tasks.addEventListener('dblclick', (event) => {
-  const target = event.target
-  const isTaskTextEL = target.classList.contains('todo__task-text')
+  const target = event.target;
+  const isTaskTextEL = target.classList.contains('todo__task-text');
 
   if (isTaskTextEL) {
-    editableTask = target
-    target.contentEditable = true
-    target.focus()
+    editableTask = target;
+    target.contentEditable = true;
+    target.focus();
   }
 })
 
 document.addEventListener('keydown', (event) => {
   if (editableTask && event.key === 'Enter') {
-    const newText = editableTask.textContent.trim()
+    const newText = editableTask.textContent.trim();
     if (newText !== '') {
-      updateTaskText(editableTask.parentNode.id, newText, tasks)
-      tasksRender(tasks)
+      updateTaskText(editableTask.parentNode.id, newText, tasks);
+      tasksRender(tasks);
     }
-    editableTask.contentEditable = false
-    editableTask = null
+    editableTask.contentEditable = false;
+    editableTask = null;
   } else if (editableTask && event.key === 'Escape') {
-    editableTask.textContent = getTaskTextById(editableTask.parentNode.id, tasks)
-    editableTask.contentEditable = false
-    editableTask = null
+    editableTask.textContent = getTaskTextById(editableTask.parentNode.id, tasks);
+    editableTask.contentEditable = false;
+    editableTask = null;
   }
-})
+});
 
 document.addEventListener('blur', (event) => {
   if (editableTask && event.target === editableTask) {
-    const newText = editableTask.textContent.trim()
+    const newText = editableTask.textContent.trim();
     if (newText !== '') {
-      updateTaskText(editableTask.parentNode.id, newText, tasks)
-      tasksRender(tasks)
+      updateTaskText(editableTask.parentNode.id, newText, tasks);
+      tasksRender(tasks);
     }
-    editableTask.contentEditable = false
-    editableTask = null
+    editableTask.contentEditable = false;
+    editableTask = null;
   }
-})
+});
 
 // Функция обновления текста задачи
 function updateTaskText(id, newText, list) {
-  
-  // Удаление лишних пробелов
-  const cleanedTaskText = _.trim(newText)
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
-
-  // Замена множества пробелов подряд на один пробел
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-    '#': '&#35;',
-    '%': '&#37;',
-    ':': '&#58;',
-    '?': '&#63;',
-    '*': '&#42;',
-  }
-  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
-  
-  if (escapedTaskText) {
-    list.forEach((task) => {
-      if (task.id == id) {
-        task.text = escapedTaskText;
-      }
-    })
-  } else {
-    alert('Поле не может быть пустым или содержать только пробелы.')
-  }
+  list.forEach((task) => {
+    if (task.id == id) {
+      task.text = newText;
+    }
+  });
 }
 
 // Функция получения текста задачи по id
 function getTaskTextById(id, list) {
-  let taskText = ''
+  let taskText = '';
   list.forEach((task) => {
     if (task.id == id) {
-      taskText = task.text
+      taskText = task.text;
     }
-  })
-  return taskText
+  });
+  return taskText;
 }
 
 // Обработчик событий для пагинации
-dom.pagination.addEventListener("click", tasksPagination)
+dom.pagination.addEventListener("click", tasksPagination);
 
 // Инициализация рендера задач
-tasksRender(tasks)
+tasksRender(tasks);
