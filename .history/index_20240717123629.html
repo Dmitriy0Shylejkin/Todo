@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="todo">
+    <div class="todo__content">
+        <h1 class="todo__title">Todo List</h1>
+        <div class="todo__new">
+            <input id="new" type="text" placeholder="Новая задача">
+            <div id="add" class="todo__add">+</div>
+        </div>
+        <div class="todo__filters">
+            <button id="filter-all" class="todo__filter">All: <strong id="count">0</strong></button>
+            <button id="filter-active" class="todo__filter">Active: <strong id="not-completed-count">0</strong></button>
+            <button id="filter-completed" class="todo__filter">Completed: <strong id="completed-count">0</strong></button>
+          </div>
+          <button id="mark-all" class="todo__mark-all">Mark all</button>
+          <button id="clear-completed" class="todo__clear-completed">Delete completed</button>
+        <div id="tasks" class="todo__list">
+        </div>
+    </div>
+    <div class="todo__pagination">
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
