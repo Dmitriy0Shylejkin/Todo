@@ -1,3 +1,6 @@
+
+
+
 // DOM elements
 const dom = {
   new: document.getElementById('new'),
@@ -26,10 +29,32 @@ let editableTask = null
 
 // The function of adding a new task
 function addNewTask() {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+  const newTaskText = dom.new.value
 
-  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
-    addTask(newTaskText, tasks)
+  // Removing unnecessary spaces
+  const cleanedTaskText = _.trim(newTaskText)
+  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
+
+  // Replacing multiple spaces in a row with one space
+  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
+
+  // Escaping scripts and symbols
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '#': '&#35;',
+    '%': '&#37;',
+    ':': '&#58;',
+    '?': '&#63;',
+    '*': '&#42;',
+  }
+  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
+
+  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
+    addTask(escapedTaskText, tasks)
     dom.new.value = ''
     tasksRender(tasks)
     dom.new.focus()
@@ -40,7 +65,7 @@ function addNewTask() {
         currentPage = totalPages;
         tasksRender(tasks);
     }
-  } else if (!newTaskText) {
+  } else if (!escapedTaskText) {
     alert('Поле не может быть пустым или содержать только пробелы.')
   }
 }
@@ -78,27 +103,7 @@ function isNotHaveTask(text, list) {
   })
 
   return isNoteHave
-}
-
-// Function to clean and escape task text
-function getCleanedTaskText(taskText) {
-  const cleanedTaskText = _.trim(taskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-    '#': '&#35;',
-    '%': '&#37;',
-    ':': '&#58;',
-    '?': '&#63;',
-    '*': '&#42;',
-  }
-  return singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m]);
-}
+} 
 
 // Task rendering function
 function tasksRender(list) {
@@ -137,8 +142,13 @@ function tasksRender(list) {
     }
 
     dom.pagination.innerHTML = paginationHtml
-    dom.tasks.innerHTML = htmlList
-    renderTaskCount(tasks)
+
+  dom.tasks.innerHTML = htmlList
+  renderTaskCount(list)
+  
+  dom.tasks.innerHTML = htmlList
+  renderTaskCount(tasks)
+
 }
 
 // Event handler for changing the status of a task and deleting a task
@@ -242,11 +252,11 @@ dom.filterCompleted.addEventListener('click', () => filterTasks('completed'))
 
 // Event handler for the add task button
 dom.add.addEventListener('click', () => {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+  const newTaskText = dom.new.value
   if(newTaskText) {
       addTask(newTaskText, tasks)
       dom.new.value = ''
-
+      
       // Checking whether the current page needs to be updated
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
     if (totalPages > currentPage) {
@@ -284,7 +294,7 @@ dom.tasks.addEventListener('dblclick', (event) => {
 
 document.addEventListener('keydown', (event) => {
   if (editableTask && event.key === 'Enter') {
-    const newText = getCleanedTaskText(editableTask.textContent.trim())
+    const newText = editableTask.textContent.trim()
     if (newText !== '') {
       updateTaskText(editableTask.parentNode.id, newText, tasks)
       tasksRender(tasks)
@@ -300,7 +310,7 @@ document.addEventListener('keydown', (event) => {
 
 document.addEventListener('blur', (event) => {
   if (editableTask && event.target === editableTask) {
-    const newText = getCleanedTaskText(editableTask.textContent.trim())
+    const newText = editableTask.textContent.trim()
     if (newText !== '') {
       updateTaskText(editableTask.parentNode.id, newText, tasks)
       tasksRender(tasks)
@@ -312,10 +322,31 @@ document.addEventListener('blur', (event) => {
 
 // Task text update function
 function updateTaskText(id, newText, list) {
-  if (newText) {
+  
+  // Removing unnecessary spaces
+  const cleanedTaskText = _.trim(newText)
+  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
+
+  // Replacing multiple spaces in a row with one space
+  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '#': '&#35;',
+    '%': '&#37;',
+    ':': '&#58;',
+    '?': '&#63;',
+    '*': '&#42;',
+  }
+  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
+  
+  if (escapedTaskText) {
     list.forEach((task) => {
       if (task.id == id) {
-        task.text = newText;
+        task.text = escapedTaskText;
       }
     })
   } else {

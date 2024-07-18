@@ -24,67 +24,18 @@ let currentPage = 1
 let currentFilter = 'all'
 let editableTask = null
 
-// The function of adding a new task
+// Функция добавления новой задачи
 function addNewTask() {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+  const newTaskText = dom.new.value
 
-  if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
-    addTask(newTaskText, tasks)
-    dom.new.value = ''
-    tasksRender(tasks)
-    dom.new.focus()
+  // Удаление лишних пробелов
+  const cleanedTaskText = _.trim(newTaskText)
+  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
 
-    // Automatically go to a new page
-    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
-    if ((currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE < tasks.length) {
-        currentPage = totalPages;
-        tasksRender(tasks);
-    }
-  } else if (!newTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.')
-  }
-}
+  // Замена множества пробелов подряд на один пробел
+  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
 
-// Event handlers for adding a new task
-dom.add.onclick = addNewTask
-
-dom.new.onkeyup = (event) => {
-  if (event.key === 'Enter') {
-    addNewTask()
-  }
-}
-
-// The function of adding a task to the list
-function addTask(text, list) {
-  const timestamp = Date.now()
-  const task = {
-    id: timestamp,
-    text,
-    isComplete: false,
-  }
-  list.push(task)
-  return timestamp
-}
-
-// Task availability check function
-function isNotHaveTask(text, list) {
-  let isNoteHave = true
-
-  list.forEach((task) => {
-    if (task.text === text) {
-      alert('Задача уже существует!')
-      isNoteHave = false
-    }
-  })
-
-  return isNoteHave
-}
-
-// Function to clean and escape task text
-function getCleanedTaskText(taskText) {
-  const cleanedTaskText = _.trim(taskText);
-  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
-  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
+  // Экранирование скриптов и символов
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -97,10 +48,61 @@ function getCleanedTaskText(taskText) {
     '?': '&#63;',
     '*': '&#42;',
   }
-  return singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m]);
+  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
+
+  if (escapedTaskText && isNotHaveTask(escapedTaskText, tasks)) {
+    addTask(escapedTaskText, tasks)
+    dom.new.value = ''
+    tasksRender(tasks)
+    dom.new.focus()
+
+    // Автоматически переходим на новую страницу, если на текущей странице уже есть 5 задач
+    const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
+    if ((currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE < tasks.length) {
+        currentPage = totalPages;
+        tasksRender(tasks);
+    }
+  } else if (!escapedTaskText) {
+    alert('Поле не может быть пустым или содержать только пробелы.')
+  }
 }
 
-// Task rendering function
+// Обработчики событий для добавления новой задачи
+dom.add.onclick = addNewTask
+
+dom.new.onkeyup = (event) => {
+  if (event.key === 'Enter') {
+    addNewTask()
+  }
+}
+
+// Функция добавления задачи в список
+function addTask(text, list) {
+  const timestamp = Date.now()
+  const task = {
+    id: timestamp,
+    text,
+    isComplete: false,
+  }
+  list.push(task)
+  return timestamp
+}
+
+// Функция проверки наличия задачи
+function isNotHaveTask(text, list) {
+  let isNoteHave = true
+
+  list.forEach((task) => {
+    if (task.text === text) {
+      alert('Задача уже существует!')
+      isNoteHave = false
+    }
+  })
+
+  return isNoteHave
+} 
+
+// Функция рендера задач
 function tasksRender(list) {
   const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE)
   let htmlList = ''
@@ -137,11 +139,16 @@ function tasksRender(list) {
     }
 
     dom.pagination.innerHTML = paginationHtml
-    dom.tasks.innerHTML = htmlList
-    renderTaskCount(tasks)
+
+  dom.tasks.innerHTML = htmlList
+  renderTaskCount(list)
+  
+  dom.tasks.innerHTML = htmlList
+  renderTaskCount(tasks)
+
 }
 
-// Event handler for changing the status of a task and deleting a task
+// Обработчик событий для изменения статуса задачи и удаления задачи
 dom.tasks.onclick = (event) => {
   const target = event.target
   const isCheckboxEL = target.classList.contains('todo__checkbox-div')
@@ -161,14 +168,14 @@ dom.tasks.onclick = (event) => {
   }
 }
 
-// Task count function
+// Функция подсчета количества задач
 function renderTaskCount(list) {
   dom.count.innerHTML = list.length
   dom.notCompletedCount.innerHTML = list.filter((task) => !task.isComplete).length
   dom.completedCount.innerHTML = list.filter((task) => task.isComplete).length
 }
 
-// Pagination function
+// Функция пагинации
 function tasksPagination(event) {
 if (event.target.classList.contains('pagination__page')) {
   currentPage = Number(event.target.dataset.page)
@@ -184,7 +191,7 @@ if (event.target.classList.contains('pagination__page')) {
 }
 }
 
-// Task status change function
+// Функция изменения статуса задачи
 function changeTaskStatus(id, list) {
   list.forEach((task) => {
       if (task.id == id) {
@@ -193,7 +200,7 @@ function changeTaskStatus(id, list) {
   })
 }
 
-// Task deletion function
+// Функция удаления задачи
 function deleteTask(id, list) {
   list.forEach((task, idx) => {
       if (task.id == id) {
@@ -202,7 +209,7 @@ function deleteTask(id, list) {
   })
 }
 
-// Event handlers for the "Mark all" and "Delete completed" buttons
+// Обработчики событий для кнопок "Mark all" и "Delete completed"
 dom.markAll.onclick = () => {
   const isAllTasksCompleted = tasks.every((task) => task.isComplete)
   tasks.forEach((task) => {
@@ -218,7 +225,7 @@ dom.clearCompleted.onclick = () => {
   renderTaskCount(filteredTasks)
 }
 
-// Task filtering function
+// Функция фильтрации задач
 function filterTasks(filter) {
   currentFilter = filter
 
@@ -235,19 +242,19 @@ function filterTasks(filter) {
   tasksRender(filteredTasks)
 }
 
-// Event handlers for filtering buttons
+// Обработчики событий для кнопок фильтрации
 dom.filterAll.addEventListener('click', () => filterTasks('all'))
 dom.filterActive.addEventListener('click', () => filterTasks('active'))
 dom.filterCompleted.addEventListener('click', () => filterTasks('completed'))
 
-// Event handler for the add task button
+// Обработчик событий для кнопки добавления задачи
 dom.add.addEventListener('click', () => {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+  const newTaskText = dom.new.value
   if(newTaskText) {
       addTask(newTaskText, tasks)
       dom.new.value = ''
-
-      // Checking whether the current page needs to be updated
+      
+      // Проверяем, нужно ли обновить текущую страницу
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
     if (totalPages > currentPage) {
       currentPage = totalPages
@@ -257,7 +264,7 @@ dom.add.addEventListener('click', () => {
   }
 })
 
-// Event handler for deleting a task
+// Обработчик событий для удаления задачи
 dom.tasks.addEventListener('click', (event) => {
   const target = event.target
   const isDeleteEL = target.classList.contains('todo__task-del')
@@ -270,7 +277,7 @@ dom.tasks.addEventListener('click', (event) => {
   }
 })
 
-// Event handler for editing the task
+// Обработчик событий для редактирования задачи
 dom.tasks.addEventListener('dblclick', (event) => {
   const target = event.target
   const isTaskTextEL = target.classList.contains('todo__task-text')
@@ -284,7 +291,7 @@ dom.tasks.addEventListener('dblclick', (event) => {
 
 document.addEventListener('keydown', (event) => {
   if (editableTask && event.key === 'Enter') {
-    const newText = getCleanedTaskText(editableTask.textContent.trim())
+    const newText = editableTask.textContent.trim()
     if (newText !== '') {
       updateTaskText(editableTask.parentNode.id, newText, tasks)
       tasksRender(tasks)
@@ -300,7 +307,7 @@ document.addEventListener('keydown', (event) => {
 
 document.addEventListener('blur', (event) => {
   if (editableTask && event.target === editableTask) {
-    const newText = getCleanedTaskText(editableTask.textContent.trim())
+    const newText = editableTask.textContent.trim()
     if (newText !== '') {
       updateTaskText(editableTask.parentNode.id, newText, tasks)
       tasksRender(tasks)
@@ -310,12 +317,33 @@ document.addEventListener('blur', (event) => {
   }
 })
 
-// Task text update function
+// Функция обновления текста задачи
 function updateTaskText(id, newText, list) {
-  if (newText) {
+  
+  // Удаление лишних пробелов
+  const cleanedTaskText = _.trim(newText)
+  const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText))
+
+  // Замена множества пробелов подряд на один пробел
+  const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ')
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '#': '&#35;',
+    '%': '&#37;',
+    ':': '&#58;',
+    '?': '&#63;',
+    '*': '&#42;',
+  }
+  const escapedTaskText = singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m])
+  
+  if (escapedTaskText) {
     list.forEach((task) => {
       if (task.id == id) {
-        task.text = newText;
+        task.text = escapedTaskText;
       }
     })
   } else {
@@ -323,7 +351,7 @@ function updateTaskText(id, newText, list) {
   }
 }
 
-// The function of getting the task text by id
+// Функция получения текста задачи по id
 function getTaskTextById(id, list) {
   let taskText = ''
   list.forEach((task) => {
@@ -334,8 +362,8 @@ function getTaskTextById(id, list) {
   return taskText
 }
 
-// Event handler for pagination
+// Обработчик событий для пагинации
 dom.pagination.addEventListener("click", tasksPagination)
 
-// Initializing the task renderer
+// Инициализация рендера задач
 tasksRender(tasks)

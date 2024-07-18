@@ -172,7 +172,7 @@ body {
     border-radius: 1rem;
     color:#EA5959;
 }
-.pagination__page--active {
+.pagination__page-active {
     background-color: var(--accent);
     color: white;
 }
