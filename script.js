@@ -1,38 +1,36 @@
 // DOM elements
-const dom = {
-  new: document.getElementById('new'),
-  add: document.getElementById('add'),
-  tasks: document.getElementById('tasks'),
-  count: document.getElementById('count'),
-  pagination: document.querySelector('.todo__pagination'),
-  page: document.querySelectorAll(".pagination__page"),
-  notCompletedCount: document.getElementById('not-completed-count'),
-  completedCount: document.getElementById('completed-count'),
-  markAll: document.getElementById('mark-all'),
-  clearCompleted: document.getElementById('clear-completed'),
-  filterAll: document.getElementById('filter-all'),
-  filterActive: document.getElementById('filter-active'),
-  filterCompleted: document.getElementById('filter-completed')
-}
+  const input = document.getElementById('input');
+  const add = document.getElementById('add');
+  const container = document.getElementById('container');
+  const count = document.getElementById('count');
+  const pagination = document.querySelector('.todo__pagination');
+  const page = document.querySelectorAll(".pagination__page");
+  const notCompletedCount = document.getElementById('not-completed-count');
+  const completedCount = document.getElementById('completed-count');
+  const markAll = document.getElementById('mark-all');
+  const clearCompleted = document.getElementById('clear-completed');
+  const filterAll = document.getElementById('filter-all');
+  const filterActive = document.getElementById('filter-active');
+  const filterCompleted = document.getElementById('filter-completed');
 
 // Constants
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 5;
 
 // Variables
-let tasks = []
-let currentPage = 1
-let currentFilter = 'all'
-let editableTask = null
+let tasks = [];
+let currentPage = 1;
+let currentFilter = 'all';
+let editableTask = null;
 
 // The function of adding a new task
-function addNewTask() {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+const addNewTask = () => {
+  const newTaskText = getCleanedTaskText(input.value)
 
   if (newTaskText && isNotHaveTask(newTaskText, tasks)) {
     addTask(newTaskText, tasks)
-    dom.new.value = ''
+    input.value = '';
     tasksRender(tasks)
-    dom.new.focus()
+    input.focus()
 
     // Automatically go to a new page
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
@@ -40,34 +38,24 @@ function addNewTask() {
         currentPage = totalPages;
         tasksRender(tasks);
     }
-  } else if (!newTaskText) {
-    alert('Поле не может быть пустым или содержать только пробелы.')
-  }
-}
-
-// Event handlers for adding a new task
-dom.add.onclick = addNewTask
-
-dom.new.onkeyup = (event) => {
-  if (event.key === 'Enter') {
-    addNewTask()
+    
   }
 }
 
 // The function of adding a task to the list
-function addTask(text, list) {
-  const timestamp = Date.now()
+const addTask = (text, list) => {
+  const timestamp = Date.now();
   const task = {
     id: timestamp,
     text,
     isComplete: false,
   }
   list.push(task)
-  return timestamp
+  return timestamp;
 }
 
 // Task availability check function
-function isNotHaveTask(text, list) {
+const isNotHaveTask = (text, list) => {
   let isNoteHave = true
 
   list.forEach((task) => {
@@ -81,7 +69,7 @@ function isNotHaveTask(text, list) {
 }
 
 // Function to clean and escape task text
-function getCleanedTaskText(taskText) {
+const getCleanedTaskText = (taskText) => {
   const cleanedTaskText = _.trim(taskText);
   const withoutExtraSpaces = _.trimEnd(_.trimStart(cleanedTaskText));
   const singleSpaces = withoutExtraSpaces.replace(/\s+/g, ' ');
@@ -100,8 +88,24 @@ function getCleanedTaskText(taskText) {
   return singleSpaces.replace(/[&<>"'#%:?*]/g, (m) => map[m]);
 }
 
+const tasksSample = (list) => {
+  const cls = list.isComplete ? 'todo__task todo__task_complete' : 'todo__task';
+  const checked = list.isComplete ? 'checked' : '';
+
+  return `
+      <div id="${list.id}" class="${cls}">
+          <label class="todo__checkbox">
+               <input type="checkbox" ${checked}>
+              <div class="todo__checkbox-div"></div>
+          </label>
+          <div class="todo__task-text" contenteditable="false">${list.text}</div>
+          <div class="todo__task-del">-</div>
+       </div>
+      `
+}
+
 // Task rendering function
-function tasksRender(list) {
+const tasksRender = (list) => {
   const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE)
   let htmlList = ''
   let paginationHtml = ''
@@ -111,20 +115,7 @@ function tasksRender(list) {
   const currentTasks = list.slice(startIndex, endIndex)
 
   currentTasks.forEach((task) => {
-      const cls = task.isComplete ? 'todo__task todo__task_complete' : 'todo__task'
-      const checked = task.isComplete ? 'checked' : ''
-
-      const taskHtml = `
-      <div id="${task.id}" class="${cls}">
-          <label class="todo__checkbox">
-               <input type="checkbox" ${checked}>
-              <div class="todo__checkbox-div"></div>
-          </label>
-          <div class="todo__task-text" contenteditable="false">${task.text}</div>
-          <div class="todo__task-del">-</div>
-       </div>
-      `
-
+      const taskHtml = tasksSample(task);
       htmlList = htmlList + taskHtml
   })
 
@@ -136,40 +127,20 @@ function tasksRender(list) {
       paginationHtml += `<button class="${buttonClass}" data-page="${i}">${i}</button>`
     }
 
-    dom.pagination.innerHTML = paginationHtml
-    dom.tasks.innerHTML = htmlList
+    pagination.innerHTML = paginationHtml
+    container.innerHTML = htmlList
     renderTaskCount(tasks)
 }
 
-// Event handler for changing the status of a task and deleting a task
-dom.tasks.onclick = (event) => {
-  const target = event.target
-  const isCheckboxEL = target.classList.contains('todo__checkbox-div')
-  const isDeleteEL = target.classList.contains('todo__task-del')
-
-  if (isCheckboxEL) {
-    const task = target.parentElement.parentElement
-    const taskId = task.getAttribute('id')
-    changeTaskStatus(taskId, tasks)
-    tasksRender(tasks)
-  }
-  if (isDeleteEL) {
-    const task = target.parentElement
-    const taskId = task.getAttribute('id')
-    deleteTask(taskId, tasks)
-    tasksRender(tasks)
-  }
-}
-
 // Task count function
-function renderTaskCount(list) {
-  dom.count.innerHTML = list.length
-  dom.notCompletedCount.innerHTML = list.filter((task) => !task.isComplete).length
-  dom.completedCount.innerHTML = list.filter((task) => task.isComplete).length
+const renderTaskCount = (list) => {
+  count.innerHTML = list.length;
+  notCompletedCount.innerHTML = list.filter((task) => !task.isComplete).length;
+  completedCount.innerHTML = list.filter((task) => task.isComplete).length;
 }
 
 // Pagination function
-function tasksPagination(event) {
+const tasksPagination = (event) => {
 if (event.target.classList.contains('pagination__page')) {
   currentPage = Number(event.target.dataset.page)
   let filteredTasks = []
@@ -185,8 +156,8 @@ if (event.target.classList.contains('pagination__page')) {
 }
 
 // Task status change function
-function changeTaskStatus(id, list) {
-  list.forEach((task) => {
+const changeTaskStatus = (id, list) => {
+  list.forEach((task, i, array) => {
       if (task.id == id) {
           task.isComplete = !task.isComplete
       }
@@ -194,7 +165,7 @@ function changeTaskStatus(id, list) {
 }
 
 // Task deletion function
-function deleteTask(id, list) {
+const deleteTask = (id, list) => {
   list.forEach((task, idx) => {
       if (task.id == id) {
           [...list] = list.splice(idx, 1)
@@ -202,27 +173,11 @@ function deleteTask(id, list) {
   })
 }
 
-// Event handlers for the "Mark all" and "Delete completed" buttons
-dom.markAll.onclick = () => {
-  const isAllTasksCompleted = tasks.every((task) => task.isComplete)
-  tasks.forEach((task) => {
-    task.isComplete = !isAllTasksCompleted
-  })
-  tasksRender(tasks)
-}
-
-dom.clearCompleted.onclick = () => {
-  const filteredTasks = tasks.filter((task) => !task.isComplete)
-  tasks = filteredTasks
-  tasksRender(filteredTasks)
-  renderTaskCount(filteredTasks)
-}
-
 // Task filtering function
-function filterTasks(filter) {
-  currentFilter = filter
+const filterTasks = (filter) => {
+  currentFilter = filter;
 
-  let filteredTasks = []
+  let filteredTasks = [];
 
   if (currentFilter === 'all') {
     filteredTasks = tasks
@@ -235,17 +190,30 @@ function filterTasks(filter) {
   tasksRender(filteredTasks)
 }
 
+// The function of getting the task text by id
+const getTaskTextById = (id, list) => {
+  let taskText = '';
+  list.forEach((task) => {
+    if (task.id == id) {
+      taskText = task.text
+    }
+  })
+  return taskText;
+}
+
+
 // Event handlers for filtering buttons
-dom.filterAll.addEventListener('click', () => filterTasks('all'))
-dom.filterActive.addEventListener('click', () => filterTasks('active'))
-dom.filterCompleted.addEventListener('click', () => filterTasks('completed'))
+filterAll.addEventListener('click', () => filterTasks('all'))
+filterActive.addEventListener('click', () => filterTasks('active'))
+filterCompleted.addEventListener('click', () => filterTasks('completed'))
 
 // Event handler for the add task button
-dom.add.addEventListener('click', () => {
-  const newTaskText = getCleanedTaskText(dom.new.value)
+add.addEventListener('click', () => {
+  console.log(input);
+  const newTaskText = getCleanedTaskText(input.value)
   if(newTaskText) {
       addTask(newTaskText, tasks)
-      dom.new.value = ''
+      input.value = ''
 
       // Checking whether the current page needs to be updated
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE)
@@ -258,7 +226,7 @@ dom.add.addEventListener('click', () => {
 })
 
 // Event handler for deleting a task
-dom.tasks.addEventListener('click', (event) => {
+container.addEventListener('click', (event) => {
   const target = event.target
   const isDeleteEL = target.classList.contains('todo__task-del')
 
@@ -271,7 +239,7 @@ dom.tasks.addEventListener('click', (event) => {
 })
 
 // Event handler for editing the task
-dom.tasks.addEventListener('dblclick', (event) => {
+container.addEventListener('dblclick', (event) => {
   const target = event.target
   const isTaskTextEL = target.classList.contains('todo__task-text')
 
@@ -310,8 +278,8 @@ document.addEventListener('blur', (event) => {
   }
 })
 
-// Task text update function
-function updateTaskText(id, newText, list) {
+// // Task text update function
+const updateTaskText = (id, newText, list) => {
   if (newText) {
     list.forEach((task) => {
       if (task.id == id) {
@@ -323,19 +291,53 @@ function updateTaskText(id, newText, list) {
   }
 }
 
-// The function of getting the task text by id
-function getTaskTextById(id, list) {
-  let taskText = ''
-  list.forEach((task) => {
-    if (task.id == id) {
-      taskText = task.text
-    }
+// Event handlers for the "Mark all" and "Delete completed" buttons
+markAll.addEventListener('click', () => {
+  const isAllTasksCompleted = tasks.every((task) => task.isComplete)
+  tasks.forEach((task) => {
+    task.isComplete = !isAllTasksCompleted
   })
-  return taskText
-}
+  tasksRender(tasks)
+})
+
+clearCompleted.addEventListener('click', () => {
+  const filteredTasks = tasks.filter((task) => !task.isComplete)
+  tasks = filteredTasks
+  tasksRender(filteredTasks)
+  renderTaskCount(filteredTasks)
+})
+
+// Event handler for changing the status of a task and deleting a task
+container.addEventListener('click', (event) => {
+  const target = event.target
+  const isCheckboxEL = target.classList.contains('todo__checkbox-div')
+  const isDeleteEL = target.classList.contains('todo__task-del')
+
+  if (isCheckboxEL) {
+    const task = target.parentElement.parentElement
+    const taskId = task.getAttribute('id')
+    changeTaskStatus(taskId, tasks)
+    tasksRender(tasks)
+  }
+  if (isDeleteEL) {
+    const task = target.parentElement
+    const taskId = task.getAttribute('id')
+    deleteTask(taskId, tasks)
+    tasksRender(tasks)
+  }
+})
 
 // Event handler for pagination
-dom.pagination.addEventListener("click", tasksPagination)
+pagination.addEventListener("click", tasksPagination);
+
+// Event handlers for adding a new task
+add.addEventListener('click', addNewTask);
+
+input.addEventListener('keyup', (event) => {
+  if (event.code === 'Enter') {
+    addNewTask();
+  }
+});
 
 // Initializing the task renderer
 tasksRender(tasks)

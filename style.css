@@ -24,10 +24,7 @@ body {
     width: 90vw;
     border-radius: 16px;
 }
-.todo__content { 
-}
-.todo__title {
-}
+
 .todo__new {
     --size: 50px;
     display: flex;
