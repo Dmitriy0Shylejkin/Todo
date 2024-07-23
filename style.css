@@ -41,6 +41,7 @@ body {
 }
 
 .btn__checkbox div {
+    margin: 20px;
     --size: 28px;
     cursor: pointer;
     height: var(--size);
@@ -51,16 +52,20 @@ body {
 }
 .btn__checkbox div::after{
     content: '✔';
-    text-align: center;
-    display: none;
+    color: white;
+    /* /* text-align: center; */
+    /* display: none; */
 }
 
 .todo_btn.btn {
-    display: block;
+    display: flex;
+    margin: auto 0;
+    flex-wrap: nowrap;
+    justify-content: center;
 }
 
-.todo_btn > * {
-    padding: .75rem 2rem;
+.todo_btn > button {
+    padding: 1rem 1rem;
     margin: 10px;
     border-radius: 10rem;
     color: #EA5959;

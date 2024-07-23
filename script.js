@@ -2,17 +2,24 @@ const dom = {
     new: document.getElementById('new'),
     add: document.getElementById('add'),
     tasks: document.getElementById('tasks'),
+    tasksText: document.querySelectorAll('.todo__task-text'),
     pagination: document.querySelector('.todo__pagination'),
     page: document.querySelectorAll(".pagination__page"),
     countAll: document.getElementById('count__all'),
     countCompleted: document.getElementById('count__completed'),
     countNotCompleted: document.getElementById('count__notcompleted'),
+    completeAll: document.getElementById('completeAll'),
+    deleteAll: document.querySelector('.btn__delete-completed'),
+    showAll: document.querySelector('.btn__all'),
+    showActive: document.querySelector('.btn__completed'),
+    showCompleted: document.querySelector('.btn__notcompleted'),
 }
 
 const ITEMS_PER_PAGE = 5;
 
 let tasks = [];
 let currentPage = 1;
+let showTasksType = 'all';
 
 function tasksRender(list) {
     const totalPages = Math.ceil(tasks.length / ITEMS_PER_PAGE);
@@ -21,7 +28,14 @@ function tasksRender(list) {
 
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const currentTasks = list.slice(startIndex, endIndex);
+    const tasksToShow = list.filter((task) => {
+        if (showTasksType === 'active') {
+          return task.isComplete; 
+        } if (showTasksType === 'completed') {
+          return !task.isComplete;
+        } return true;
+      });
+    const currentTasks = tasksToShow.slice(startIndex, endIndex);
 
     currentTasks.forEach((task) => {
         const cls = task.isComplete ? 'todo__task todo__task_complete' : 'todo__task'
@@ -56,9 +70,30 @@ function tasksRender(list) {
 }
 
 function renderTaskCount(list) {
-    dom.countAll.innerHTML = list.length;
-    dom.countCompleted.innerHTML = list.filter((task) => !!task.isComplete).length;
-    dom.countNotCompleted.innerHTML = list.filter((task) => !task.isComplete).length;
+    if (list.length) {
+        dom.countAll.innerHTML = list.length;
+        dom.countCompleted.innerHTML = list.filter((task) => !!task.isComplete).length;
+        dom.countNotCompleted.innerHTML = list.filter((task) => !task.isComplete).length;
+    } else {
+        dom.countAll.innerHTML = "";
+        dom.countCompleted.innerHTML = "";
+        dom.countNotCompleted.innerHTML = "";
+    }
+}
+
+function completeAllTasks(event) {
+    if (tasks.length) {
+        tasks = tasks.map((task) => {
+            task.isComplete = event.target.checked;
+            return task;
+        });
+        tasksRender(tasks);
+    }
+}
+
+function deleteCompletedTasks(event) {
+    tasks = tasks.filter((task) => !task.isComplete);
+    tasksRender(tasks);
 }
 
 function tasksPagination(event) {
@@ -69,9 +104,8 @@ function tasksPagination(event) {
 }
 
 function addTask(text, list) {
-    const timestamp = Date.now()
     const task = {
-        id: timestamp,
+        id: Date.now(),
         text,
         isComplete: false
     }
@@ -94,7 +128,38 @@ function deleteTask(id, list) {
     })
 }
 
-dom.add.addEventListener('click', event => {
+function showTasks(type) {
+    switch (type) {
+      case 'all':
+        showTasksType = 'all';
+        break;
+      case 'active':
+        showTasksType = 'active';
+        break;
+      case 'completed':
+        showTasksType = 'completed';
+        break;
+      default:
+        showTasksType = 'all';
+    }
+  }
+  
+  function handleAllTasks() {
+    showTasks('all');
+    tasksRender(tasks);
+  }
+  
+  function handleActiveTasks() {
+    showTasks('active');
+    tasksRender(tasks);
+  }
+  
+  function handleCompletedTasks() {
+    showTasks('completed');
+    tasksRender(tasks);
+  }
+
+dom.add.addEventListener('click', () => {
     const newTaskText = dom.new.value
     if(newTaskText) {
         addTask(newTaskText, tasks)
@@ -102,6 +167,56 @@ dom.add.addEventListener('click', event => {
         tasksRender(tasks)
     }
 })
+
+
+dom.tasks.addEventListener('dblclick', event => {
+    const target = event.target;
+    const isTaskText = target.classList.contains('todo__task-text');
+    console.log(target)
+  
+    if (isTaskText) {
+      const task = target.parentElement;
+      const taskId = task.getAttribute('id');
+      const taskText = task.querySelector('.todo__task-text');
+      const taskTextEdit = task.querySelector('.todo__task-text_edit');
+  
+      if (taskTextEdit.hasAttribute('contenteditable')) {
+        taskText.textContent = taskTextEdit.textContent;
+        taskTextEdit.removeAttribute('contenteditable');
+        taskTextEdit.classList.remove('todo__task-text_edit_active');
+      } else {
+        taskTextEdit.textContent = taskText.textContent;
+        taskTextEdit.setAttribute('contenteditable', true);
+        taskTextEdit.classList.add('todo__task-text_edit_active');
+        taskTextEdit.focus();
+  
+        taskTextEdit.addEventListener('keydown', event => {
+          if (event.key === 'Enter') {
+            taskText.textContent = taskTextEdit.textContent;
+            taskTextEdit.removeAttribute('contenteditable');
+            taskTextEdit.classList.remove('todo__task-text_edit_active');
+          }
+        });
+  
+        taskTextEdit.addEventListener('keydown', event => {
+          if (event.key === 'Escape') {
+            taskTextEdit.textContent = taskText.textContent;
+            taskTextEdit.removeAttribute('contenteditable');
+            taskTextEdit.classList.remove('todo__task-text_edit_active');
+      }})
+}}
+});
+
+dom.new.addEventListener('keypress', event => {
+    if (event.key === 'Enter') {
+      const newTaskText = dom.new.value.trim();
+      if (newTaskText) {
+        addTask(newTaskText, tasks);
+        dom.new.value = '';
+        tasksRender(tasks);
+      }
+    }
+  });
 
 dom.tasks.addEventListener('click', (event) => {
     const target = event.target
@@ -127,5 +242,10 @@ dom.tasks.addEventListener('click', (event) => {
     }
 })
 
-dom.pagination.addEventListener("click", tasksPagination);
+dom.showAll.addEventListener('click', handleAllTasks);
+dom.showActive.addEventListener('click', handleActiveTasks);
+dom.showCompleted.addEventListener('click', handleCompletedTasks);
+dom.completeAll.addEventListener("change", completeAllTasks);
+dom.deleteAll.addEventListener('click', deleteCompletedTasks);
 
+dom.pagination.addEventListener("click", tasksPagination);  
